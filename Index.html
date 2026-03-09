@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Axotol Black - Admin Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'DM Serif Display', serif;
+            background-color: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* Header - Minimal with just logo */
+        .app-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .header-placeholder {
+            width: 40px;
+        }
+        
+        /* Main login container */
+        .login-container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* App title with typewriter effect - CENTERED */
+        .app-title {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin-bottom: 15px;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 0;
+            animation: typing 3.5s steps(20, end) forwards;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Typewriter effect */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        .app-tagline {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-bottom: 30px;
+            color: #aaa;
+            opacity: 0;
+            animation: fadeIn 1s ease 3.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Security badge */
+        .security-badge {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            color: #888;
+            margin-bottom: 30px;
+            font-style: italic;
+            opacity: 0;
+            animation: fadeIn 1s ease 3.8s forwards;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Password field */
+        .password-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: fadeIn 1s ease 4s forwards;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 18px 50px 18px 20px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #8B0000;
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .password-input:focus {
+            border-color: #b22222;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.3rem;
+            transition: color 0.2s;
+        }
+        
+        .password-toggle:hover {
+            color: white;
+        }
+        
+        /* Login button */
+        .login-btn {
+            background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 18px 20px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            opacity: 0;
+            animation: fadeIn 1s ease 4.2s forwards;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .login-btn:not(:disabled):hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 30px rgba(139, 0, 0, 0.4);
+        }
+        
+        .login-btn:disabled {
+            background: #2a2a2a;
+            color: #666;
+            box-shadow: none;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+        
+        /* Error message */
+        .error-message {
+            background: rgba(139, 0, 0, 0.2);
+            border: 1px solid #8B0000;
+            color: #ff8a8a;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin: 20px 0 10px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            opacity: 0;
+            animation: fadeIn 0.3s forwards;
+        }
+        
+        .error-message i {
+            font-size: 1.2rem;
+        }
+        
+        /* Footer note */
+        .footer-note {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #444;
+            opacity: 0;
+            animation: fadeIn 1s ease 4.5s forwards;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .app-header {
+                padding: 12px 15px;
+            }
+            .logo {
+                width: 45px;
+                height: 45px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            body {
+                padding: 15px;
+            }
+            .app-header {
+                padding: 10px 12px;
+            }
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+            .password-input {
+                padding: 16px 45px 16px 15px;
+                font-size: 1.1rem;
+            }
+            .login-btn {
+                padding: 16px;
+                font-size: 1.2rem;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .app-title {
+                font-size: 2.2rem;
+            }
+            .logo {
+                width: 35px;
+                height: 35px;
+            }
+        }
+        
+        /* Landscape orientation */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .login-container {
+                margin-top: 40px;
+            }
+            .app-title {
+                margin-bottom: 5px;
+            }
+            .app-tagline {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with only logo (no back button) -->
+    <div class="app-header">
+        <div class="logo-container">
+            <img src="image.png" alt="Axotol Logo" class="logo">
+        </div>
+        <div class="header-placeholder"></div>
+    </div>
+    
+    <!-- Main login container -->
+    <div class="login-container">
+        <!-- App title with typewriter effect - CENTERED -->
+        <h1 class="app-title">Axotol</h1>
+        <p class="app-tagline">administrative access</p>
+        
+        <div class="security-badge">
+            <i class="fas fa-shield-alt" style="margin-right: 6px;"></i> secure portal
+        </div>
+        
+        <!-- Password field with toggle -->
+        <div class="password-wrapper">
+            <input type="password" class="password-input" id="adminPassword" 
+                   placeholder="enter security key" maxlength="10" autocomplete="off" autofocus>
+            <button type="button" class="password-toggle" id="togglePassword" tabindex="-1">
+                <i class="fas fa-eye"></i>
+            </button>
+        </div>
+        
+        <!-- Error area -->
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText">invalid password</span>
+        </div>
+        
+        <!-- Login button -->
+        <button class="login-btn" id="loginBtn" disabled>
+            <i class="fas fa-lock"></i> LOGIN
+        </button>
+        
+        <div class="footer-note">
+            <i class="fas fa-fingerprint" style="margin-right: 6px;"></i> authorised personnel only
+        </div>
+    </div>
+    
+    <script>
+        (function() {
+            // Constants
+            const SECRET = "mapalomang"; // 10-character key
+            
+            // DOM elements
+            const passwordField = document.getElementById('adminPassword');
+            const toggleBtn = document.getElementById('togglePassword');
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('errorMessage');
+            const errorSpan = document.getElementById('errorText');
+            
+            // State
+            let isVisible = false;
+            
+            // Toggle password visibility
+            toggleBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                isVisible = !isVisible;
+                if (isVisible) {
+                    passwordField.type = 'text';
+                    toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                } else {
+                    passwordField.type = 'password';
+                    toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+                }
+            });
+            
+            // Real-time validation
+            function validateInput() {
+                const current = passwordField.value;
+                loginBtn.disabled = current.length !== 10;
+                if (errorDiv.style.display === 'flex') {
+                    errorDiv.style.display = 'none';
+                }
+            }
+            
+            passwordField.addEventListener('input', validateInput);
+            
+            // Handle login attempt
+            function attemptLogin() {
+                const entered = passwordField.value;
+                
+                if (entered === SECRET) {
+                    // Success - redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    // Failure
+                    errorSpan.textContent = 'invalid security key · access denied';
+                    errorDiv.style.display = 'flex';
+                    
+                    passwordField.value = '';
+                    passwordField.focus();
+                    loginBtn.disabled = true;
+                    
+                    // Gentle shake effect
+                    passwordField.style.transform = 'translateX(4px)';
+                    setTimeout(() => passwordField.style.transform = '', 100);
+                }
+            }
+            
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (!loginBtn.disabled) attemptLogin();
+            });
+            
+            passwordField.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (!loginBtn.disabled) attemptLogin();
+                }
+            });
+            
+            // Prevent double-tap zoom
+            let lastTouch = 0;
+            document.addEventListener('touchend', function(e) {
+                const now = Date.now();
+                if (now - lastTouch <= 300) e.preventDefault();
+                lastTouch = now;
+            }, { passive: false });
+            
+            // Touch feedback
+            loginBtn.addEventListener('touchstart', function() {
+                if (!this.disabled) this.style.transform = 'scale(0.98)';
+            });
+            loginBtn.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
+            
+            // Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    errorDiv.style.display = 'none';
+                    passwordField.blur();
+                }
+            });
+            
+            // Auto-focus
+            passwordField.focus();
+            
+            // Handle orientation changes
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    passwordField.style.transform = '';
+                    loginBtn.style.transform = '';
+                }, 200);
+            });
+        })();
+    </script>
+</body>
+</html>
